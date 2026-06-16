@@ -1,6 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/dashboard", "destination": "/dashboard.html" }
-  ],
+  "buildCommand": "",
+  "outputDirectory": ".",
   "cleanUrls": true
 }
