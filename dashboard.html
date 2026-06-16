@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Syndicate — Sponsor Leads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B090A;
+    --surface: #161A1D;
+    --surface-hover: #1E2023;
+    --border: rgba(245, 243, 244, 0.08);
+    --text: #F5F3F4;
+    --text-dim: #B1A7A6;
+    --accent: #BA181B;
+    --accent-hover: #E5383B;
+    --accent-glow: rgba(186, 24, 27, .2);
+    --accent-orange: #E5383B;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --radius: 6px;
+    --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font: var(--font-body);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  ::selection { background: var(--accent); color: var(--text); }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ───────────────────────────────── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+
+  .logo h1 {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .header-stats {
+    display: flex; gap: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .header-stats strong { color: var(--text); }
+
+  /* ── CONTROLS ─────────────────────────────── */
+  .controls {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: center;
+  }
+
+  .controls input,
+  .controls select,
+  .controls button {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    padding: .55rem .85rem;
+    outline: none;
+    transition: border-color .3s;
+  }
+  .controls input { text-transform: none; letter-spacing: normal; font-family: var(--font-body); font-size: .85rem; }
+  .controls input:focus,
+  .controls select:focus { border-color: var(--accent); }
+
+  .controls input[type="text"] { min-width: 220px; }
+
+  .controls button {
+    cursor: pointer;
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--text);
+    border-radius: 100px;
+    padding: .55rem 1.25rem;
+    transition: background .3s, transform .15s;
+  }
+  .controls button:hover { background: var(--accent-hover); transform: scale(1.02); }
+  .controls button:active { transform: scale(0.98); }
+  .controls button.secondary {
+    background: transparent;
+    border-color: rgba(245, 243, 244, 0.2);
+    color: var(--text-dim);
+    border-radius: 100px;
+  }
+  .controls button.secondary:hover { border-color: rgba(245, 243, 244, 0.4); color: var(--text); background: rgba(255,255,255,0.05); }
+
+  .spacer { flex: 1; }
+
+  /* ── TABLE ────────────────────────────────── */
+  .table-wrap {
+    overflow-x: auto;
+    padding: 0 2rem 2rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: .85rem;
+  }
+
+  thead th {
+    background: var(--surface);
+    text-align: left;
+    padding: .7rem .85rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: .625rem;
+    letter-spacing: .15em;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition: color .3s;
+  }
+  thead th:hover { color: var(--text); }
+  thead th .sort-arrow { margin-left: .3rem; opacity: .4; }
+  thead th.active .sort-arrow { opacity: 1; color: var(--accent); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+  }
+  tbody tr:hover { background: var(--surface-hover); }
+
+  td {
+    padding: .65rem .85rem;
+    vertical-align: top;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Score badge */
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .2rem .55rem;
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: .7rem;
+    letter-spacing: 0.02em;
+  }
+  .score-high { background: rgba(34,197,94,.15); color: var(--green); }
+  .score-med  { background: rgba(234,179,8,.15);  color: var(--yellow); }
+  .score-low  { background: rgba(136,136,136,.1);  color: var(--text-dim); }
+
+  /* Decision-makers button */
+  .dm-btn {
+    font-family: var(--font-mono);
+    font-size: .625rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: .35rem .75rem;
+    border: 1px solid rgba(245, 243, 244, 0.2);
+    border-radius: 100px;
+    background: transparent;
+    color: var(--accent-hover);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .3s;
+  }
+  .dm-btn:hover { border-color: var(--accent); background: rgba(186, 24, 27, 0.08); }
+  .dm-btn:disabled { opacity: .4; cursor: default; }
+
+  .dm-info {
+    font-size: .78rem;
+    color: var(--text-dim);
+    margin-top: .25rem;
+    line-height: 1.4;
+  }
+  .dm-info strong { color: var(--text); }
+  .dm-info a { color: var(--accent-orange); text-decoration: none; }
+  .dm-info a:hover { text-decoration: underline; }
+
+  /* Category tag */
+  .cat-tag {
+    display: inline-block;
+    padding: .15rem .45rem;
+    border-radius: 4px;
+    font-size: .72rem;
+    background: rgba(255,255,255,.06);
+    color: var(--text-dim);
+    margin: .1rem .15rem .1rem 0;
+  }
+
+  /* ── LOADING / EMPTY STATES ───────────────── */
+  .state-msg {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-dim);
+  }
+  .state-msg h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: .5rem;
+    color: var(--text);
+  }
+  .state-msg p { font-size: .875rem; }
+
+  .spinner {
+    display: inline-block;
+    width: 28px; height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin-bottom: .75rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SCROLLBAR ───────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #7A7372; border-radius: 2px; }
+
+  /* ── RESPONSIVE ───────────────────────────── */
+  @media (max-width: 768px) {
+    header, .controls, .table-wrap { padding-left: 1rem; padding-right: 1rem; }
+    .controls input[type="text"] { min-width: 0; flex: 1; }
+    table { font-size: .78rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────── -->
+<header>
+  <div class="logo">
+    <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+      <img src="/logo.png" alt="Speed Syndicate" style="height:38px;width:auto">
+      <h1>Sponsor Leads</h1>
+    </a>
+  </div>
+  <div class="header-stats" id="headerStats"></div>
+</header>
+
+<!-- ── CONTROLS ────────────────────────────── -->
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search company name...">
+  <select id="cityFilter">
+    <option value="">All Markets</option>
+  </select>
+  <select id="sortSelect">
+    <option value="score-desc">Score (high first)</option>
+    <option value="score-asc">Score (low first)</option>
+    <option value="name-asc">Name A-Z</option>
+    <option value="name-desc">Name Z-A</option>
+    <option value="city-asc">City A-Z</option>
+  </select>
+  <button id="loadBtn">Load All Markets</button>
+  <div class="spacer"></div>
+  <button class="secondary" id="csvFilteredBtn" disabled>Download Filtered CSV</button>
+  <button class="secondary" id="csvAllBtn" disabled>Download All CSV</button>
+</div>
+
+<!-- ── TABLE ───────────────────────────────── -->
+<div class="table-wrap">
+  <div class="state-msg" id="stateMsg">
+    <h2>Ready to load leads</h2>
+    <p>Click "Load All Markets" or choose a market from the dropdown, then hit Load.</p>
+  </div>
+  <table id="leadsTable" style="display:none">
+    <thead>
+      <tr>
+        <th data-sort="score" class="active">Score <span class="sort-arrow">&#9660;</span></th>
+        <th data-sort="name">Company <span class="sort-arrow">&#9660;</span></th>
+        <th data-sort="city">Market <span class="sort-arrow">&#9660;</span></th>
+        <th>Industry</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Website</th>
+        <th>Socials</th>
+        <th>Decision-Makers</th>
+      </tr>
+    </thead>
+    <tbody id="leadsBody"></tbody>
+  </table>
+</div>
+
+<script>
+/* ================================================================
+   DATASETS — add more {id, city, state} objects here as needed
+   ================================================================ */
+const DATASETS = [
+  { id: 'e0X2m0uVWYNjZeUds', city: 'Charlotte',      state: 'NC' },
+  { id: 'fPTFJovWibH4wko8f', city: 'Indianapolis',   state: 'IN' },
+  { id: 'eJ9r1HBlvcoXtUVs4', city: 'Atlanta',        state: 'GA' },
+  { id: 'EJ9ShdtXiomOMlsab', city: 'Daytona Beach',  state: 'FL' },
+  { id: '8n64PdfCRfd211gOt', city: 'Austin',         state: 'TX' },
+  { id: '9hmfm76sI9WSWmONd', city: 'Dallas',         state: 'TX' },
+  { id: 'XANKmfQ4RItXtjdWt', city: 'Miami',          state: 'FL' },
+  { id: 'PjFOGYLpbdbunSPpa', city: 'Los Angeles',    state: 'CA' },
+  { id: 'GPdBhOLf39RuAhLP2', city: 'Chicago',        state: 'IL' },
+  { id: 'uof5fQeMLcED1EdJu', city: 'Phoenix',        state: 'AZ' },
+];
+
+/* ── State ──────────────────────────────────── */
+let allLeads = [];     // master list
+let filtered = [];     // after filter/search
+let currentSort = { key: 'score', dir: 'desc' };
+
+/* ── DOM refs ───────────────────────────────── */
+const searchInput    = document.getElementById('searchInput');
+const cityFilter     = document.getElementById('cityFilter');
+const sortSelect     = document.getElementById('sortSelect');
+const loadBtn        = document.getElementById('loadBtn');
+const csvFilteredBtn = document.getElementById('csvFilteredBtn');
+const csvAllBtn      = document.getElementById('csvAllBtn');
+const stateMsg       = document.getElementById('stateMsg');
+const leadsTable     = document.getElementById('leadsTable');
+const leadsBody      = document.getElementById('leadsBody');
+const headerStats    = document.getElementById('headerStats');
+
+/* ── Populate city dropdown ─────────────────── */
+DATASETS.forEach(d => {
+  const opt = document.createElement('option');
+  opt.value = d.id;
+  opt.textContent = `${d.city}, ${d.state}`;
+  cityFilter.appendChild(opt);
+});
+
+/* ── Scoring ────────────────────────────────── */
+const MOTORSPORT_KEYWORDS = [
+  'auto','car','motor','race','speed','tire','oil','fuel','garage','mechanic',
+  'collision','body shop','performance','exhaust','transmission','brake','wheel',
+  'tuning','detailing','wrap','vinyl','graphic','sign','print','apparel',
+  'beer','brewery','energy','drink','supplement','fitness','gym','nutrition',
+  'insurance','financial','invest','bank','real estate','property','mortgage',
+  'tech','software','it ','cyber','marketing','media','advertis','brand',
+  'hotel','travel','restaurant','bar','grill','bbq','food','catering',
+  'construction','hvac','electric','plumb','roofing','contractor',
+  'law','attorney','legal','dentist','chiro','medical','health','wellness',
+];
+
+function scoreLead(lead) {
+  let score = 0;
+  const name = (lead.name || lead.title || '').toLowerCase();
+  const cats = ((lead.categoryName || lead.categories || '') + '').toLowerCase();
+  const combined = name + ' ' + cats + ' ' + (lead.description || '').toLowerCase();
+
+  // Industry relevance (0-40 pts)
+  let matchCount = 0;
+  MOTORSPORT_KEYWORDS.forEach(kw => { if (combined.includes(kw)) matchCount++; });
+  score += Math.min(matchCount * 8, 40);
+
+  // Has website (10 pts)
+  if (lead.website || lead.url) score += 10;
+
+  // Has phone (5 pts)
+  if (lead.phone || lead.telephone) score += 5;
+
+  // Has reviews / social proof (0-15 pts)
+  const reviews = parseInt(lead.reviewsCount || lead.totalScore || 0);
+  if (reviews > 100) score += 15;
+  else if (reviews > 20) score += 10;
+  else if (reviews > 0) score += 5;
+
+  // High rating (0-10 pts)
+  const rating = parseFloat(lead.stars || lead.rating || 0);
+  if (rating >= 4.5) score += 10;
+  else if (rating >= 4) score += 7;
+  else if (rating >= 3) score += 3;
+
+  // Has address / is local (5 pts)
+  if (lead.address || lead.street) score += 5;
+
+  // Has email already (5 pts)
+  if (lead.email) score += 5;
+
+  // Has image / branding (5 pts)
+  if (lead.imageUrl || lead.image) score += 5;
+
+  return Math.min(score, 100);
+}
+
+function scoreBadge(score) {
+  let cls = 'score-low';
+  if (score >= 60) cls = 'score-high';
+  else if (score >= 30) cls = 'score-med';
+  return `<span class="score-badge ${cls}">${score}</span>`;
+}
+
+/* ── Fetch leads ────────────────────────────── */
+async function fetchDataset(ds) {
+  const res = await fetch(`/api/leads?datasetId=${encodeURIComponent(ds.id)}`);
+  if (!res.ok) throw new Error(`Failed to fetch ${ds.city}: ${res.status}`);
+  const items = await res.json();
+  return items.map(item => ({
+    ...item,
+    // Normalize array fields from Apify
+    email: (Array.isArray(item.emails) && item.emails.length) ? item.emails[0] : (item.email || ''),
+    _allEmails: Array.isArray(item.emails) ? item.emails : [],
+    _socials: {
+      instagram: (Array.isArray(item.instagrams) && item.instagrams[0]) || '',
+      facebook: (Array.isArray(item.facebooks) && item.facebooks[0]) || '',
+      linkedin: (Array.isArray(item.linkedIns) && item.linkedIns[0]) || '',
+    },
+    _market: `${ds.city}, ${ds.state}`,
+    _marketCity: ds.city,
+    _datasetId: ds.id,
+  }));
+}
+
+async function loadLeads() {
+  const selectedId = cityFilter.value;
+  const toLoad = selectedId ? DATASETS.filter(d => d.id === selectedId) : DATASETS;
+
+  stateMsg.innerHTML = '<div class="spinner"></div><h2>Loading leads...</h2><p>Fetching from ' + toLoad.length + ' market(s)</p>';
+  stateMsg.style.display = '';
+  leadsTable.style.display = 'none';
+  loadBtn.disabled = true;
+  loadBtn.textContent = 'Loading...';
+
+  try {
+    const results = await Promise.allSettled(toLoad.map(fetchDataset));
+    let leads = [];
+    let errors = [];
+    results.forEach((r, i) => {
+      if (r.status === 'fulfilled') leads = leads.concat(r.value);
+      else errors.push(toLoad[i].city + ': ' + r.reason.message);
+    });
+
+    // Score them
+    leads.forEach(l => { l._score = scoreLead(l); });
+
+    allLeads = leads;
+    applyFilters();
+
+    if (errors.length && leads.length === 0) {
+      stateMsg.innerHTML = '<h2>Failed to load leads</h2><p>' + errors.join('<br>') + '</p>';
+      stateMsg.style.display = '';
+      leadsTable.style.display = 'none';
+    } else {
+      stateMsg.style.display = 'none';
+      leadsTable.style.display = '';
+      csvFilteredBtn.disabled = false;
+      csvAllBtn.disabled = false;
+      if (errors.length) console.warn('Some markets failed:', errors);
+    }
+  } catch (err) {
+    stateMsg.innerHTML = '<h2>Error</h2><p>' + err.message + '</p>';
+  }
+  loadBtn.disabled = false;
+  loadBtn.textContent = 'Load All Markets';
+}
+
+/* ── Filter / Sort / Render ─────────────────── */
+function applyFilters() {
+  const q = searchInput.value.toLowerCase().trim();
+  const cityId = cityFilter.value;
+
+  filtered = allLeads.filter(l => {
+    if (cityId && l._datasetId !== cityId) return false;
+    if (q) {
+      const name = (l.name || l.title || '').toLowerCase();
+      if (!name.includes(q)) return false;
+    }
+    return true;
+  });
+
+  sortLeads();
+  render();
+  updateStats();
+}
+
+function sortLeads() {
+  const [key, dir] = sortSelect.value.split('-');
+  currentSort = { key, dir };
+
+  filtered.sort((a, b) => {
+    let va, vb;
+    if (key === 'score') { va = a._score; vb = b._score; }
+    else if (key === 'name') { va = (a.name || a.title || '').toLowerCase(); vb = (b.name || b.title || '').toLowerCase(); }
+    else if (key === 'city') { va = a._market; vb = b._market; }
+    else { va = 0; vb = 0; }
+
+    if (va < vb) return dir === 'asc' ? -1 : 1;
+    if (va > vb) return dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
+
+function render() {
+  leadsBody.innerHTML = '';
+  if (filtered.length === 0) {
+    stateMsg.innerHTML = '<h2>No leads match your filters</h2><p>Try a different search or market.</p>';
+    stateMsg.style.display = '';
+    leadsTable.style.display = 'none';
+    return;
+  }
+  stateMsg.style.display = 'none';
+  leadsTable.style.display = '';
+
+  filtered.forEach((lead, idx) => {
+    const name = lead.name || lead.title || 'Unknown';
+    const phone = lead.phone || lead.telephone || '';
+    const website = lead.website || lead.url || '';
+    const cats = lead.categoryName || lead.categories || '';
+    const catTags = (typeof cats === 'string' ? cats : (Array.isArray(cats) ? cats.join(', ') : ''))
+      .split(',').map(c => c.trim()).filter(Boolean)
+      .map(c => `<span class="cat-tag">${esc(c)}</span>`).join('');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${scoreBadge(lead._score)}</td>
+      <td><strong>${esc(name)}</strong>${lead.address ? '<br><span style="color:var(--text-dim);font-size:.78rem">' + esc(lead.address) + '</span>' : ''}</td>
+      <td>${esc(lead._market)}</td>
+      <td>${catTags || '<span style="color:var(--text-dim)">--</span>'}</td>
+      <td>${phone ? '<a href="tel:' + esc(phone) + '" style="color:var(--text)">' + esc(phone) + '</a>' : '<span style="color:var(--text-dim)">--</span>'}</td>
+      <td>${lead.email ? '<a href="mailto:' + esc(lead.email) + '" style="color:var(--accent-orange);text-decoration:none;font-size:.8rem">' + esc(lead.email) + '</a>' + (lead._allEmails.length > 1 ? '<br><span style="color:var(--text-dim);font-size:.7rem">+' + (lead._allEmails.length - 1) + ' more</span>' : '') : '<span style="color:var(--text-dim)">--</span>'}</td>
+      <td>${website ? '<a href="' + esc(ensureHttp(website)) + '" target="_blank" rel="noopener" style="color:var(--accent-orange);text-decoration:none;font-size:.8rem">' + truncUrl(website) + '</a>' : '<span style="color:var(--text-dim)">--</span>'}</td>
+      <td style="font-size:.78rem">${socialLinks(lead._socials)}</td>
+      <td id="dm-${idx}">
+        <button class="dm-btn" onclick="loadDM(${idx})">+ Load decision-makers</button>
+      </td>
+    `;
+    leadsBody.appendChild(tr);
+  });
+}
+
+function updateStats() {
+  const markets = new Set(allLeads.map(l => l._market));
+  headerStats.innerHTML = `
+    <span><strong>${allLeads.length}</strong> total leads</span>
+    <span><strong>${markets.size}</strong> markets</span>
+    <span><strong>${filtered.length}</strong> shown</span>
+  `;
+}
+
+/* ── Decision-makers (enriched contact) ─────── */
+function loadDM(idx) {
+  const lead = filtered[idx];
+  const cell = document.getElementById('dm-' + idx);
+  if (!cell) return;
+
+  // Simulated enrichment from existing lead data
+  // In production this would call an enrichment API endpoint
+  const name = lead.ownerName || lead.contactName || '';
+  const title = lead.ownerTitle || lead.contactTitle || '';
+  const email = lead.email || lead.contactEmail || '';
+
+  if (name || email) {
+    cell.innerHTML = `
+      <div class="dm-info">
+        ${name ? '<strong>' + esc(name) + '</strong>' : ''}
+        ${title ? ' &mdash; ' + esc(title) : ''}
+        ${email ? '<br><a href="mailto:' + esc(email) + '">' + esc(email) + '</a>' : ''}
+      </div>`;
+  } else {
+    cell.innerHTML = `
+      <div class="dm-info" style="color:var(--text-dim)">
+        No contact data available for this lead yet.
+        <br>Enrich via Apollo, Hunter, or manual lookup.
+      </div>`;
+  }
+}
+
+/* ── CSV Download ───────────────────────────── */
+function downloadCSV(leads, filename) {
+  const headers = ['Score','Company','Market','Category','Phone','Email','All Emails','Website','Address','Instagram','Facebook','LinkedIn','Reviews','Rating'];
+  const rows = leads.map(l => [
+    l._score,
+    l.name || l.title || '',
+    l._market,
+    l.categoryName || (Array.isArray(l.categories) ? l.categories.join('; ') : l.categories || ''),
+    l.phone || l.telephone || '',
+    l.email || '',
+    (l._allEmails || []).join('; '),
+    l.website || l.url || '',
+    l.address || '',
+    (l._socials && l._socials.instagram) || '',
+    (l._socials && l._socials.facebook) || '',
+    (l._socials && l._socials.linkedin) || '',
+    l.reviewsCount || '',
+    l.totalScore || '',
+  ]);
+
+  let csv = headers.join(',') + '\n';
+  rows.forEach(r => {
+    csv += r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n';
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ── Helpers ────────────────────────────────── */
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function ensureHttp(url) {
+  return url.match(/^https?:\/\//) ? url : 'https://' + url;
+}
+
+function truncUrl(url) {
+  return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '').slice(0, 35);
+}
+
+function socialLinks(s) {
+  if (!s) return '<span style="color:var(--text-dim)">--</span>';
+  const links = [];
+  if (s.instagram) links.push('<a href="' + esc(s.instagram) + '" target="_blank" rel="noopener" style="color:#E1306C;text-decoration:none" title="Instagram">IG</a>');
+  if (s.facebook) links.push('<a href="' + esc(s.facebook) + '" target="_blank" rel="noopener" style="color:#4267B2;text-decoration:none" title="Facebook">FB</a>');
+  if (s.linkedin) links.push('<a href="' + esc(s.linkedin) + '" target="_blank" rel="noopener" style="color:#0077B5;text-decoration:none" title="LinkedIn">LI</a>');
+  return links.length ? links.join(' &middot; ') : '<span style="color:var(--text-dim)">--</span>';
+}
+
+/* ── Event listeners ────────────────────────── */
+loadBtn.addEventListener('click', loadLeads);
+searchInput.addEventListener('input', applyFilters);
+cityFilter.addEventListener('change', () => {
+  if (allLeads.length) applyFilters();
+});
+sortSelect.addEventListener('change', applyFilters);
+csvFilteredBtn.addEventListener('click', () => downloadCSV(filtered, 'speed-syndicate-leads-filtered.csv'));
+csvAllBtn.addEventListener('click', () => downloadCSV(allLeads, 'speed-syndicate-leads-all.csv'));
+
+// Column header sort
+document.querySelectorAll('thead th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    const current = sortSelect.value;
+    const [ck, cd] = current.split('-');
+    if (ck === key) {
+      sortSelect.value = key + '-' + (cd === 'asc' ? 'desc' : 'asc');
+    } else {
+      sortSelect.value = key + '-' + (key === 'score' ? 'desc' : 'asc');
+    }
+    applyFilters();
+  });
+});
+</script>
+</body>
+</html>
